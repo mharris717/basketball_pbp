@@ -98,6 +98,34 @@ describe 'parse' do
       end
     end
   end
+  
+  if false
+    describe "substitution" do
+      let(:raw_play) { "20111225BOSNYK	68	00:40:35	[NYK] Fields Substitution replaced by Walker" }
+      describe 'first event' do
+        it 'should be sub_out' do
+          first_event.event_type.should == 'sub_out'
+        end
+        it 'should be Fields' do
+          first_event.player.should == 'Fields'
+        end
+        it 'should be NYK' do
+          first_event.team.should == 'NYK'
+        end
+      end
+      describe 'addl event' do
+        it 'should be sub_out' do
+          addl_event.event_type.should == 'sub_in'
+        end
+        it 'should be Fields' do
+          addl_event.player.should == 'Walker'
+        end
+        it 'should be NYK' do
+          addl_event.team.should == 'NYK'
+        end
+      end
+    end
+  end
 
   describe "test file parsing" do
     it 'parse' do
