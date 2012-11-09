@@ -3,14 +3,22 @@ grammar PBP
     team_score ows first_event:first_event? ows ae:addl_event? ows 
   end
   rule full_line
-    game ws lnum:num ws time ws team_score ows first_event:first_event? ows ae:addl_event? ows  {
-      def method_missging(sym,*args,&b)
-        if [:first_event,:team_score,:player,:team].include?(sym) && entry
+    game ws lnum:num ws time ws entry  {
+      def method_missing(sym,*args,&b)
+        if [:first_event,:team_score,:ae].include?(sym)
           entry.send(sym,*args,&b)
         else
           super
         end
       end
+      def respond_to?(sym)
+        if [:first_event,:team_score,:ae].include?(sym)
+          true
+        else
+          super
+        end
+      end
+          
     }
   end
   
