@@ -1,5 +1,11 @@
 BP = BasketballPbp
 
-filename = "data/AllData201203032316/sample_pbp.txt"
+puts BP::PBPFile.coll.count
+
+#filename = "data/AllData201203032316/sample_pbp.txt"
+filename = "data/AllData201203032316/playbyplay201203032316.txt"
+
 file = BP::PBPFile::RawFile.new(:path => filename)
-file.rows[0...20].each { |x| puts x.inspect }
+file.save!
+
+puts BP::PBPFile.coll.count

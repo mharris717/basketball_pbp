@@ -9,8 +9,7 @@ module BasketballPbp
       fattr(:short_filename) do
         path.split("/")[-2..-1].join("/")
       end
-      def rows
-        res = []
+      def each_row
         CSV.foreach(path,:headers => true, :col_sep => delimiter) do |row|
           h = {}
           row.each do |k,v|
@@ -18,12 +17,17 @@ module BasketballPbp
           end
           fill_row(h)
           h["filename"] = short_filename
-          res << h
+          yield(h)
         end
+      end
+      def rows
+        res = []
+        each_row { |x| res << x }
         res
       end
       def save!
-        rows.each do |row|
+        PBPFile.coll.remove(:filename => short_filename)
+        each_row do |row|
           PBPFile.coll.save(row)
         end
       end 

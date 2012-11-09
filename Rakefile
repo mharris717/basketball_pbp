@@ -48,8 +48,22 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-task :save_raw do
+task :load_lib do
   load "lib/basketball_pbp.rb"
-  BasketballPbp::PBPFile.coll.remove
+end
+
+task :save_raw_old => [:load_lib] do
   BasketballPbp::PBPFile.all.each { |x| x.save! }
+end
+
+task :save_raw => [:load_lib] do
+  puts BasketballPbp::PBPFile.coll.count
+
+  #filename = "data/AllData201203032316/sample_pbp.txt"
+  filename = "data/AllData201203032316/playbyplay201203032316.txt"
+
+  file = BasketballPbp::PBPFile::RawFile.new(:path => filename)
+  file.save!
+
+  puts BasketballPbp::PBPFile.coll.count
 end

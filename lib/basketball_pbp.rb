@@ -9,6 +9,6 @@ module BasketballPbp
   
 end
 
-%w(pbp_file play event saved_event player_game grammar).each do |f|
+%w(pbp_file event grammar).each do |f|
   load File.dirname(__FILE__) + "/basketball_pbp/#{f}.rb"
 end

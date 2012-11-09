@@ -4,7 +4,7 @@ module BasketballPbp
       fattr(:coll) do
         conn = Mongo::Connection.new
         db = conn.db('basketball')
-        db.collection('pbp2')
+        db.collection('raw_pbp')
       end
     end
   end
