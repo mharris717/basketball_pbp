@@ -90,6 +90,25 @@ describe 'parse' do
       it('team') { addl_event.team.should == 'NYK' }
     end
   end
+  
+  describe 'block' do
+    let(:raw_play) { "20111225BOSNYK	70	00:40:05	[BOS] Bass Jump Shot: Missed Block: Chandler (1 BLK)" }
+    describe 'first event' do
+      it 'should be turnover' do
+        first_event.event_type.should == 'jump shot'
+      end
+      it('player') { first_event.player.should == 'bass' }
+      it('team') { first_event.team.should == 'BOS' }
+    end
+    describe 'addl event' do
+      it 'should be turnover' do
+        addl_event.event_type.should == 'block'
+      end
+      it('player') { addl_event.player.should == 'chandler' }
+      it('team') { addl_event.team.should == 'NYK' }
+    end
+  end
+  
   describe 'personal block' do
     let(:raw_play) { "20111225CHILAL  86  00:38:14  [LAL] Blake Foul: Personal Block (1 PF)" }
     describe 'first event' do
@@ -99,33 +118,7 @@ describe 'parse' do
     end
   end
   
-  if false
-    describe "substitution" do
-      let(:raw_play) { "20111225BOSNYK	68	00:40:35	[NYK] Fields Substitution replaced by Walker" }
-      describe 'first event' do
-        it 'should be sub_out' do
-          first_event.event_type.should == 'sub_out'
-        end
-        it 'should be Fields' do
-          first_event.player.should == 'Fields'
-        end
-        it 'should be NYK' do
-          first_event.team.should == 'NYK'
-        end
-      end
-      describe 'addl event' do
-        it 'should be sub_out' do
-          addl_event.event_type.should == 'sub_in'
-        end
-        it 'should be Fields' do
-          addl_event.player.should == 'Walker'
-        end
-        it 'should be NYK' do
-          addl_event.team.should == 'NYK'
-        end
-      end
-    end
-  end
+  
 
   describe "test file parsing" do
     it 'parse' do

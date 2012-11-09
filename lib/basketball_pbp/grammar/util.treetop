@@ -1,0 +1,20 @@
+grammar Util
+  rule ows
+     [ \t]*
+   end
+   rule ws
+     [ \t]+
+   end
+   rule num
+     [0-9]+
+   end
+   rule padded_colon
+     ows ":" ows
+   end
+   rule digit
+     [0-9]
+   end
+   rule paren_phrase
+     "(" [^)]+ ")"
+   end
+end

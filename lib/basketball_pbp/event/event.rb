@@ -1,7 +1,7 @@
 module BasketballPbp
   class Event
     include FromHash
-    attr_accessor :player, :raw_event_type, :made_missed, :team, :game, :time, :filename
+    attr_accessor :player, :raw_event_type, :made_missed, :team, :game, :time, :filename, :raw_line
     def event_type
       return "free throw" if raw_event_type =~ /free throw/i
       raw_event_type
@@ -34,6 +34,19 @@ module BasketballPbp
     end
     def stl
       (event_type == 'steal') ? 1 : 0
+    end
+    
+    def sub?
+      %w(sub_in sub_out).include?(event_type)
+    end
+    
+    def quarter
+      return 5 if time[0..0] == '-'
+      min = time.split(":")[1].to_i
+      return 1 if min >= 36
+      return 2 if min >= 24
+      return 3 if min >= 12
+      4
     end
 
     def save!

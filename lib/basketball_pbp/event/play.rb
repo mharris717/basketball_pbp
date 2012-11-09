@@ -3,7 +3,7 @@ module BasketballPbp
     module MakeEvents
       def new_event(event,ops={})
         base = {:player => event.player.text_value, :raw_event_type => event.event_type.text_value}
-        base = base.merge(:team => team, :game => game, :time => time, :filename => filename)
+        base = base.merge(:team => team, :game => game, :time => time, :filename => filename, :raw_line => line)
         ops = base.merge(ops)
         Event.new(ops)
       end
@@ -24,10 +24,27 @@ module BasketballPbp
 
         if addl_event
           e = new_event(addl_event)
-          e.team = other_team if e.stl == 1
+          e.team = other_team if e.stl == 1 || e.blk == 1
           res << e
         end
 
+        res
+      end
+    end
+    
+    class << self
+      def resave_game(game)
+        SavedEvent.where(:game => game).destroy
+        PBPFile.coll.find(:GameID => game).each do |row|
+          Row.new(:row => row).save!
+        end 
+      end
+      
+      def make_events_for_game(game)
+        res = []
+        PBPFile.coll.find(:GameID => game).each do |row|
+          res += Row.new(:row => row).events
+        end
         res
       end
     end
@@ -52,7 +69,7 @@ module BasketballPbp
         (teams - [team]).first
       end
       def known_bad_event?
-        line =~ /jump ball/i or line =~ /(substitution|technical|timeout|ejection)/i or line =~ /end of/i or line =~ /illegal screen/i
+        line =~ /jump ball/i or line =~ /(timeout|ejection)/i or line =~ /end of/i or line =~ /illegal screen/i
       end
       
       def save!

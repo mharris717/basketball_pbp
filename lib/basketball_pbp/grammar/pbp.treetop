@@ -1,6 +1,24 @@
 grammar PBP
+  include Util
+  include PBPUtil
+  include Substitution
   rule entry
-    team_score ows first_event:first_event? ows ae:addl_event? ows 
+    team_score ows events ows {
+      def method_missing(sym,*args,&b)
+        if [:first_event,:ae].include?(sym)
+          events.send(sym,*args,&b)
+        else
+          super
+        end
+      end
+      def respond_to?(sym)
+        if [:first_event,:ae].include?(sym)
+          true
+        else
+          super
+        end
+      end   
+    }
   end
   rule full_line
     game ws lnum:num ws time ws entry  {
@@ -17,40 +35,25 @@ grammar PBP
         else
           super
         end
-      end
-          
+      end   
     }
   end
   
-  rule game
-    [0-9a-z]+
+  rule std_events
+    first_event:first_event? ows ae:addl_event?
   end
-  rule ows
-    [ \t]*
+  
+  rule events
+    substitution_entry / std_events
   end
-  rule ws
-    [ \t]+
-  end
-  rule num
-    [0-9]+
-  end
-  rule time
-    num ":" num ":" num
-  end
-  rule team_score
-    "[" team:[a-z]+ ows score? "]"
-  end
-  rule score
-    num "-" num
-  end
+  
+
 
   rule first_event
     player ws event_type ows mm:(padded_colon? modifier ows)? paren_phrase? ows
   end
 
-  rule player
-    "world peace" / ([a-z] / "'" / ". " / " jr.")+
-  end
+  
   rule event_type
     free_throw / "assist" / "turnover" / "steal" / "rebound" / "foul" / "violation" / "block" / mixed_shot / "illegal screen turnover"
   end
@@ -63,23 +66,13 @@ grammar PBP
   rule mixed_shot
     (ows shot_modifier ows)* "shot"
   end
-  rule paren_phrase
-    "(" [^)]+ ")"
-  end
+  
   rule modifier
     "offensive foul turnover" / "personal take" / "offensive charge" / "personal block" / "shooting block" / "made" / "missed" / "bad pass" / "lost ball" / "shooting" / "lane" / "personal" / "traveling" / "backcourt turnover" / "out of bounds lost ball turnover" / "loose ball" / "defensive goaltending" / "offensive goaltending" / "defensive" / "offensive" / "foul" / "shot clock turnover" / "palming turnover" / "step out of bounds turnover" / "defense 3 second" /  "delay of game" / "kicked ball" / "3 second violation" / "poss lost ball turnover" / "flagrant type 1" / "flagrant type 2" / "discontinue dribble" / "double dribble" / "inbound" / "clear path"
   end
 
   rule addl_event
     event_type padded_colon player ows paren_phrase?
-  end
-
-  rule padded_colon
-    ows ":" ows
-  end
-
-  rule digit
-    [0-9]
   end
 end
 

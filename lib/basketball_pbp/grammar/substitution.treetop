@@ -1,0 +1,35 @@
+grammar Substitution
+  include Util
+  include PBPUtil
+  rule substitution_entry
+    ows first_event:player_out ows "substitution replaced by" ows ae:player_in ows
+  end
+  rule player_out
+    player {
+      def player
+        self
+      end
+      def event_type
+        OpenStruct.new(:text_value => "sub_out")
+      end
+      def mm
+        OpenStruct.new(:text_value => "")
+      end
+    }
+  end
+  rule player_in
+    player {
+      def player
+        self
+      end
+      def event_type
+        OpenStruct.new(:text_value => "sub_in")
+      end
+      def mm
+        OpenStruct.new(:text_value => "")
+      end
+    }
+  end
+end
+
+# 20111225BOSNYK	68	00:40:35	[NYK] Fields Substitution replaced by Walker

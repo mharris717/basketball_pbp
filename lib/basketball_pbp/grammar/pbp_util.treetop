@@ -1,0 +1,18 @@
+grammar PBPUtil
+  rule game
+    [0-9a-z]+
+  end
+ 
+  rule time
+    num ":" num ":" num
+  end
+  rule team_score
+    "[" team:[a-z]+ ows score? "]"
+  end
+  rule score
+    num "-" num
+  end
+  rule player
+    "world peace" / ([a-z] / "'" / ". " / " jr.")+
+  end
+end
