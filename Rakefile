@@ -48,6 +48,8 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+
+
 task :load_lib do
   load "lib/basketball_pbp.rb"
 end
@@ -66,4 +68,17 @@ task :save_raw => [:load_lib] do
   file.save!
 
   puts BasketballPbp::PBPFile.coll.count
+end
+
+task :save_events => [:load_lib] do
+  BP::SavedEvent.destroy_all
+
+  puts BP::PBPFile.coll.count
+
+  BP::PBPFile.coll.find.each_with_index do |row,i|
+    BP::Play::Row.new(:row => row).save!
+    puts "#{i} #{BP::SavedEvent.count}" if (i%1000) == 0
+  end
+
+  puts BP::SavedEvent.count
 end

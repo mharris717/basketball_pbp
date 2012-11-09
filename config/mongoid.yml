@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      database: basketball
+      hosts:
+        - localhost:27017

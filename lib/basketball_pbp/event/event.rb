@@ -1,7 +1,7 @@
 module BasketballPbp
   class Event
     include FromHash
-    attr_accessor :player, :raw_event_type, :made_missed, :team, :game, :time
+    attr_accessor :player, :raw_event_type, :made_missed, :team, :game, :time, :filename
     def event_type
       return "free throw" if raw_event_type =~ /free throw/i
       raw_event_type
@@ -38,7 +38,7 @@ module BasketballPbp
 
     def save!
       res = SavedEvent.new
-      %w(pts reb ast blk turn stl player game team event_type time).each do |f|
+      %w(pts reb ast blk turn stl player game team event_type time filename).each do |f|
         res.send("#{f}=",send(f))
       end
       res.save!

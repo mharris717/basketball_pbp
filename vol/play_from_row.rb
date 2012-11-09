@@ -1,8 +1,12 @@
 BP = BasketballPbp
 
-rows = BP::PBPFile.coll.find.limit(2000)
+BP::SavedEvent.destroy_all
 
-rows.each do |row|
-  play = BP::Play::Row.new(:row => row)
-  puts play.events.size
+puts BP::PBPFile.coll.count
+
+BP::PBPFile.coll.find.each_with_index do |row,i|
+  BP::Play::Row.new(:row => row).save!
+  puts "#{i} #{BP::SavedEvent.count}" if (i%1000) == 0
 end
+
+puts BP::SavedEvent.count

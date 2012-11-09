@@ -10,6 +10,7 @@ module BasketballPbp
     field :team
     field :event_type
     field :time
+    field :filename
 
     #index :game
     #index :player

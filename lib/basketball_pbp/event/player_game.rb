@@ -8,7 +8,12 @@ module BasketballPbp
     field :player
     field :game
     field :team
-    def self.create_for_game(game)
+    
+    def to_s
+      "#{player} #{game} #{team} #{pts}/#{reb}/#{ast} #{blk}B #{stl}S #{turn}T"
+    end
+    def self.make_for_game(game)
+      all = []
       events = SavedEvent.where(:game => game)
       events.group_by { |x| [x.team,x.player] }.each do |ks,es|
         res = new(:player => ks[1], :team => ks[0], :game => game)
@@ -16,8 +21,9 @@ module BasketballPbp
           val = es.map { |x| x.send(f) }.sum
           res.send("#{f}=",val)
         end
-        res.save!
+        all << res
       end
+      all
     end
   end
 end

@@ -3,7 +3,7 @@ module BasketballPbp
     module MakeEvents
       def new_event(event,ops={})
         base = {:player => event.player.text_value, :raw_event_type => event.event_type.text_value}
-        base = base.merge(:team => team, :game => game, :time => time)
+        base = base.merge(:team => team, :game => game, :time => time, :filename => filename)
         ops = base.merge(ops)
         Event.new(ops)
       end
@@ -35,9 +35,9 @@ module BasketballPbp
     class Base
       include FromHash
       include MakeEvents
-      attr_accessor :line
+      attr_accessor :line, :filename
       fattr(:parsed) do 
-        parser_class.new.parse(line.downcase.strip) 
+        parse_with(parser_class,line.downcase.strip) 
       end
       
       def team
@@ -53,6 +53,10 @@ module BasketballPbp
       end
       def known_bad_event?
         line =~ /jump ball/i or line =~ /(substitution|technical|timeout|ejection)/i or line =~ /end of/i or line =~ /illegal screen/i
+      end
+      
+      def save!
+        events.each { |x| x.save! }
       end
       
       
@@ -75,6 +79,9 @@ module BasketballPbp
       
       def line
         row['Entry']
+      end
+      def filename
+        row['filename']
       end
       def game
         row['GameID']
