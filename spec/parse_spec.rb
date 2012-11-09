@@ -101,7 +101,7 @@ describe 'parse' do
 
   describe "test file parsing" do
     it 'parse' do
-      lines = File.read("/users/mharris717/dropbox/basketball/data/test_pbp.txt").split("\n").map { |x| x.strip }[1...100]
+      lines = File.read("spec/test_pbp.txt").split("\n").map { |x| x.strip }[1...100]
       lines.reject { |line| parse_play(line) }[0...10].should == []
     end
   end
