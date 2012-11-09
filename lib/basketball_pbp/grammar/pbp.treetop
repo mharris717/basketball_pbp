@@ -1,0 +1,80 @@
+grammar PBP
+  rule entry
+    team_score ows first_event:first_event? ows ae:addl_event? ows 
+  end
+  rule full_line
+    game ws lnum:num ws time ws team_score ows first_event:first_event? ows ae:addl_event? ows  {
+      def method_missging(sym,*args,&b)
+        if [:first_event,:team_score,:player,:team].include?(sym) && entry
+          entry.send(sym,*args,&b)
+        else
+          super
+        end
+      end
+    }
+  end
+  
+  rule game
+    [0-9a-z]+
+  end
+  rule ows
+    [ \t]*
+  end
+  rule ws
+    [ \t]+
+  end
+  rule num
+    [0-9]+
+  end
+  rule time
+    num ":" num ":" num
+  end
+  rule team_score
+    "[" team:[a-z]+ ows score? "]"
+  end
+  rule score
+    num "-" num
+  end
+
+  rule first_event
+    player ws event_type ows mm:(padded_colon? modifier ows)? paren_phrase? ows
+  end
+
+  rule player
+    "world peace" / ([a-z] / "'" / ". " / " jr.")+
+  end
+  rule event_type
+    free_throw / "assist" / "turnover" / "steal" / "rebound" / "foul" / "violation" / "block" / mixed_shot / "illegal screen turnover"
+  end
+  rule free_throw
+    ("free throw" ows ("flagrant" / "clear path")? ows digit ws "of" ws digit) / "free throw technical"
+  end
+  rule shot_modifier
+    ("turnaround" / "running" / "driving" / "reverse" / "jump" / "fadeaway" / "reverse" / "alley oop" / "driving" / "pullup" / "finger roll" / "step back" / "hook" / "floating" / "putback" / "finger roll" / "bank hook" / "bank" / "hook" / "layup" / "dunk" / "fadeaway" / "jump" / "slam dunk" / "tip" / "3pt")
+  end
+  rule mixed_shot
+    (ows shot_modifier ows)* "shot"
+  end
+  rule paren_phrase
+    "(" [^)]+ ")"
+  end
+  rule modifier
+    "offensive foul turnover" / "personal take" / "offensive charge" / "personal block" / "shooting block" / "made" / "missed" / "bad pass" / "lost ball" / "shooting" / "lane" / "personal" / "traveling" / "backcourt turnover" / "out of bounds lost ball turnover" / "loose ball" / "defensive goaltending" / "offensive goaltending" / "defensive" / "offensive" / "foul" / "shot clock turnover" / "palming turnover" / "step out of bounds turnover" / "defense 3 second" /  "delay of game" / "kicked ball" / "3 second violation" / "poss lost ball turnover" / "flagrant type 1" / "flagrant type 2" / "discontinue dribble" / "double dribble" / "inbound" / "clear path"
+  end
+
+  rule addl_event
+    event_type padded_colon player ows paren_phrase?
+  end
+
+  rule padded_colon
+    ows ":" ows
+  end
+
+  rule digit
+    [0-9]
+  end
+end
+
+# "20111225BOSNYK  5 00:47:10  [BOS 1-0] Rondo Free Throw 1 of 2 (1 PTS)"
+# 20111225BOSNYK  26  00:45:07  [NYK 9-5] Fields 3pt Shot: Made (3 PTS) Assist: Anthony (1 AST)
+# 20111225BOSNYK  70  00:40:05  [BOS] Bass Jump Shot: Missed Block: Chandler (1 BLK)

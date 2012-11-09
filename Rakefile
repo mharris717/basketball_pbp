@@ -47,3 +47,9 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :save_raw do
+  load "lib/basketball_pbp.rb"
+  BasketballPbp::PBPFile.coll.remove
+  BasketballPbp::PBPFile.all.each { |x| x.save! }
+end

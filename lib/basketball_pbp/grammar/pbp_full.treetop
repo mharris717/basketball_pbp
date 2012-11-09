@@ -1,0 +1,6 @@
+grammar PbpFull
+  include PBP
+  rule main
+    full_line
+  end
+end

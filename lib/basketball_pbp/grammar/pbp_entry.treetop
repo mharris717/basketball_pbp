@@ -1,0 +1,6 @@
+grammar PbpEntry
+  include PBP
+  rule main
+    entry
+  end
+end
