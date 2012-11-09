@@ -11,7 +11,7 @@ describe 'parse' do
     parser.parse(raw_play.downcase)
   end
   let(:play) do
-    BasketballPbp::Play.new(:line => raw_play)
+    BasketballPbp::Play::Full.new(:line => raw_play)
   end
   let(:first_event) { play.events.first }
   let(:addl_event) { play.events[1] }
@@ -30,7 +30,7 @@ describe 'parse' do
       first_event.event_type.should == 'free throw'
     end
     it 'team' do
-      first_event.team.should == 'bos'
+      first_event.team.should == 'BOS'
     end
     it 'game' do
       first_event.game.should == '20111225BOSNYK'.downcase
@@ -80,14 +80,14 @@ describe 'parse' do
         first_event.event_type.should == 'turnover'
       end
       it('player') { first_event.player.should == 'allen' }
-      it('team') { first_event.team.should == 'bos' }
+      it('team') { first_event.team.should == 'BOS' }
     end
     describe 'addl event' do
       it 'should be turnover' do
         addl_event.event_type.should == 'steal'
       end
       it('player') { addl_event.player.should == 'stoudemire' }
-      it('team') { addl_event.team.should == 'nyk' }
+      it('team') { addl_event.team.should == 'NYK' }
     end
   end
   describe 'personal block' do
